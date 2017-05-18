@@ -1,0 +1,73 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "vm_name": "{{user `vm_name`}}",
+      "disk_size": "65536",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "RedHat_64",
+      "hard_drive_interface": "sata",
+      "headless": "true",
+      "http_directory": "http",
+      "iso_checksum": "c018577c75b2434fbb2c324789dee0ba887d9c32",
+      "iso_checksum_type": "sha1",
+      "iso_urls": [
+        "http://mirrors.sonic.net/centos/7.3.1611/isos/x86_64/CentOS-7-x86_64-DVD-1611.iso"
+      ],
+      "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
+      "ssh_password": "vagrant",
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "output_directory": "output/iso/virtualbox",
+      "vboxmanage": [
+        [
+          "modifyvm", "{{.Name}}", "--memory", "512"
+        ],
+        [
+          "modifyvm", "{{.Name}}", "--cpus", "1"
+        ],
+        [
+          "modifyvm", "{{.Name}}", "--paravirtprovider", "default"
+        ],
+        [
+          "modifyvm", "{{.Name}}", "--nictype1", "virtio"
+        ]
+      ],
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/kickstart.cfg<enter>"
+      ],
+      "virtualbox_version_file": ".vbox_version"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "scripts/prep.sh",
+        "scripts/install-vagrant-key.sh",
+        "scripts/install-sdkman.sh",
+        "scripts/install-jdk.sh",
+        "scripts/install-avahi.sh",
+        "scripts/motd.sh",
+        "scripts/install-vbox-additions.sh"
+      ],
+      "type": "shell"
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "output/box/{{.Provider}}/{{user `vm_name`}}-{{user `version`}}.box",
+      "type": "vagrant"
+    }
+  ],
+  "variables": {
+    "ftp_proxy": "{{env `ftp_proxy`}}",
+    "http_proxy": "{{env `http_proxy`}}",
+    "https_proxy": "{{env `https_proxy`}}",
+    "no_proxy": "{{env `no_proxy`}}",
+    "rsync_proxy": "{{env `rsync_proxy`}}",
+    "version": "0.1.0",
+    "vm_name": "centos-7-jdk"
+  }
+}
