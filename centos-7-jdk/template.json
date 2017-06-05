@@ -3,22 +3,21 @@
     {
       "type": "virtualbox-iso",
       "vm_name": "{{user `vm_name`}}",
-      "disk_size": "65536",
+      "disk_size": "{{user `disk_size`}}",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "guest_os_type": "RedHat_64",
+      "guest_os_type": "{{user `guest_os_type`}}",
       "hard_drive_interface": "sata",
-      "headless": "true",
+      "headless": "{{user `headless`}}",
       "http_directory": "http",
-      "iso_checksum": "c018577c75b2434fbb2c324789dee0ba887d9c32",
-      "iso_checksum_type": "sha1",
-      "iso_urls": [
-        "http://mirrors.sonic.net/centos/7.3.1611/isos/x86_64/CentOS-7-x86_64-DVD-1611.iso"
-      ],
-      "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
-      "ssh_password": "vagrant",
-      "ssh_username": "vagrant",
-      "ssh_wait_timeout": "10000s",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
+      "ssh_password": "{{user `ssh_password`}}",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_wait_timeout": "{{user `ssh_wait_timeout`}}",
       "output_directory": "output/iso/virtualbox",
+      "vrdp_bind_address": "{{user `vnc_bind_address`}}",
       "vboxmanage": [
         [
           "modifyvm", "{{.Name}}", "--memory", "512"
@@ -34,9 +33,32 @@
         ]
       ],
       "boot_command": [
-        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/kickstart.cfg<enter>"
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/kickstart.cfg<enter><wait>"
       ],
       "virtualbox_version_file": ".vbox_version"
+    },
+    {
+      "type": "qemu",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "output_directory": "output/qemu",
+      "shutdown_command": "{{user `shutdown_command`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "format": "qcow2",
+      "headless": "{{user `headless`}}",
+      "accelerator": "kvm",
+      "http_directory": "{{user `http_directory`}}",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_password`}}",
+      "ssh_wait_timeout": "{{user `ssh_wait_timeout`}}",
+      "vm_name": "{{user `vm_name`}}",
+      "net_device": "virtio-net",
+      "disk_interface": "virtio",
+      "vnc_bind_address": "{{user `vnc_bind_address`}}",
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/kickstart.cfg<enter><wait>"
+      ]
     }
   ],
   "provisioners": [
@@ -56,7 +78,7 @@
   ],
   "post-processors": [
     {
-      "keep_input_artifact": false,
+      "keep_input_artifact": true,
       "output": "output/box/{{.Provider}}/{{user `vm_name`}}-{{user `version`}}.box",
       "type": "vagrant"
     }
@@ -68,6 +90,18 @@
     "no_proxy": "{{env `no_proxy`}}",
     "rsync_proxy": "{{env `rsync_proxy`}}",
     "version": "0.1.0",
-    "vm_name": "centos-7-jdk"
+    "vm_name": "centos-7-jdk",
+    "iso_url": "http://mirrors.sonic.net/centos/7.3.1611/isos/x86_64/CentOS-7-x86_64-DVD-1611.iso",
+    "iso_checksum": "c018577c75b2434fbb2c324789dee0ba887d9c32",
+    "iso_checksum_type": "sha1",
+    "disk_size": "65536",
+    "headless": "true",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "http_directory": "http",
+    "ssh_wait_timeout": "10000s",
+    "guest_os_type": "RedHat_64",
+    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
+    "vnc_bind_address": "0.0.0.0"
   }
 }
