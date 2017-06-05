@@ -47,7 +47,7 @@
       "disk_size": "{{user `disk_size`}}",
       "format": "qcow2",
       "headless": "{{user `headless`}}",
-      "accelerator": "none",
+      "accelerator": "kvm",
       "http_directory": "{{user `http_directory`}}",
       "ssh_username": "{{user `ssh_username`}}",
       "ssh_password": "{{user `ssh_password`}}",
