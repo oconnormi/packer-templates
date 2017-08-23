@@ -81,7 +81,13 @@
       "keep_input_artifact": true,
       "output": "output/box/{{.Provider}}/{{user `vm_name`}}-{{user `version`}}.box",
       "type": "vagrant"
-    }
+    },
+    {
+        "type": "vagrant-cloud",
+        "access_token": "{{user `vagrantcloud_token`}}",
+        "box_tag": "{{user `box_owner`}}/{{user `vm_name`}}",
+        "version": "{{user `version`}}"
+      }
   ],
   "variables": {
     "ftp_proxy": "{{env `ftp_proxy`}}",
@@ -91,6 +97,8 @@
     "rsync_proxy": "{{env `rsync_proxy`}}",
     "version": "0.1.0",
     "vm_name": "centos-7-jdk",
+    "box_owner": "oconnormi",
+    "vagrantcloud_token": "{{env `VAGRANTCLOUD_TOKEN`}}",
     "iso_url": "http://mirrors.sonic.net/centos/7.3.1611/isos/x86_64/CentOS-7-x86_64-DVD-1611.iso",
     "iso_checksum": "c018577c75b2434fbb2c324789dee0ba887d9c32",
     "iso_checksum_type": "sha1",
